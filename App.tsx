@@ -129,14 +129,9 @@ const App: React.FC = () => {
             <div className="h-8 w-full flex-shrink-0" style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}></div>
 
             <div className="flex-grow flex flex-col px-4 pb-0 overflow-hidden">
-                <header className="px-2">
-                    <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-cyan-400">7-Zip GUI v2.2</h1>
-                    <p className="text-slate-500 dark:text-slate-400 mt-1">The complete front-end for the 7-Zip CLI.</p>
-                </header>
-
-                <main className="px-2 mt-4 flex-grow flex flex-col overflow-hidden">
+                <main className="px-2 flex-grow flex flex-col overflow-hidden">
                     <CommandTabs currentView={view} onViewChange={handleViewChange} />
-                    <div className="mt-6 flex-grow overflow-y-auto pr-2 pb-4 bg-white dark:bg-slate-800 p-4 rounded-b-lg border-x border-b border-slate-200 dark:border-slate-700">
+                    <div className="flex-grow overflow-y-auto pr-2 pb-4 bg-white dark:bg-slate-800 p-4 rounded-b-lg border-x border-b border-slate-200 dark:border-slate-700">
                         {renderView()}
                     </div>
                 </main>

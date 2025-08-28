@@ -15,6 +15,7 @@ const SETTINGS_PATH = path.join(app.getPath('userData'), 'settings.json');
 
 // --- Logger Implementation ---
 const getLogFilePath = () => {
+  // FIX: Removed `import process from 'process'` to use the global Node.js process object which has the correct typings for `cwd()` and `platform`.
   const logDir = isDev ? process.cwd() : path.dirname(app.getPath('exe'));
   const date = new Date().toISOString().split('T')[0];
   return path.join(logDir, `7zip-gui-${date}.log`);
