@@ -2,14 +2,14 @@
   "name": "7zip-gui",
   "version": "2.0.0",
   "description": "A GUI for 7zip on Windows",
-  "main": "dist/main.js",
+  "main": "dist/main.cjs",
   "type": "module",
   "scripts": {
     "start": "npm run build && electron .",
     "build": "npm run build:renderer && npm run build:main && npm run build:preload",
     "build:renderer": "esbuild index.tsx --bundle --outfile=dist/renderer.js --platform=browser --format=esm --jsx=automatic --sourcemap",
-    "build:main": "esbuild electron/main.ts --bundle --outfile=dist/main.js --platform=node --format=cjs --external:electron --sourcemap",
-    "build:preload": "esbuild electron/preload.ts --bundle --outfile=dist/preload.js --platform=node --format=cjs --external:electron --sourcemap",
+    "build:main": "esbuild electron/main.ts --bundle --outfile=dist/main.cjs --platform=node --format=cjs --external:electron --sourcemap",
+    "build:preload": "esbuild electron/preload.ts --bundle --outfile=dist/preload.cjs --platform=node --format=cjs --external:electron --sourcemap",
     "package": "npm run build && electron-builder"
   },
   "keywords": [

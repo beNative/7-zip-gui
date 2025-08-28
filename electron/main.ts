@@ -1,4 +1,3 @@
-
 import { app, BrowserWindow, ipcMain, dialog } from 'electron';
 import path from 'path';
 import fs from 'fs';
@@ -6,8 +5,11 @@ import fsp from 'fs/promises';
 import { spawn } from 'child_process';
 import { fileURLToPath } from 'url';
 import { LogLevel, type LogMessage } from '../types';
-// FIX: Import process to get correct typings for process properties.
-import process from 'process';
+
+// FIX: The `process` object is a global in Node.js environments like Electron's main process.
+// Importing it explicitly was causing TypeScript to use a generic, incorrect type, leading to
+// errors for properties like `.cwd()`, `.platform`, and `.resourcesPath`. Removing the incorrect
+// import allows TypeScript to use the correct global type definitions.
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -76,7 +78,7 @@ function createWindow() {
     width: 800,
     height: 850,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
+      preload: path.join(__dirname, 'preload.cjs'),
       contextIsolation: true,
       nodeIntegration: false,
     },
