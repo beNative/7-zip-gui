@@ -1,46 +1,49 @@
-# 7-Zip GUI
+# 7-Zip GUI - v2.0
 
-A modern, cross-platform graphical user interface for the powerful 7-Zip command-line tool. Built with Electron, React, and TypeScript, this application provides a simple and intuitive way to handle file compression and extraction.
+A modern, powerful, and complete graphical user interface for the 7-Zip command-line tool. Built with Electron, React, and TypeScript, this application provides a comprehensive and intuitive way to handle all your file compression and archiving needs.
+
+This application is designed for both beginners and power users, providing sensible defaults while exposing the full capabilities of the 7-Zip engine.
 
 ## Features
 
-- **Compress Files & Folders**: Easily create archives in `.7z` or `.zip` format.
-- **Multiple Compression Levels**: Choose from "Copy" (no compression) to "Ultra" for maximum space saving.
-- **Extract Archives**: Supports extracting from popular formats like `.7z`, `.zip`, `.rar`, `.tar`, and more.
-- **Real-time Operation Logging**: View the output from the 7-Zip process as it happens during a compression or extraction task.
-- **Progress Visualization**: A progress bar shows the status of the current operation.
-- **Application Event Logging**: A detailed application log panel can be toggled to view debug, info, warning, and error messages.
+- **Full Command Support**: A dedicated UI for all major 7-Zip commands: `Add`, `Extract`, `Test`, `List`, `Delete`, `Update`, `Benchmark`, `Hash`, and more.
+- **Exhaustive Switch Coverage**: A dynamic, context-aware UI to control a wide range of 7-Zip switches for fine-grained control over your operations.
+- **Live Command Preview**: See the exact CLI command that will be executed, updated in real-time. Perfect for learning and scripting.
+- **Schema-Driven UI**: The interface is generated from a central schema, ensuring accuracy and making it easy to support future 7-Zip versions.
+- **Executable Management**: Auto-detects your `7z`/`7zz`/`7za` executable, with the ability to override the path in the Settings panel.
+- **Real-time Logging**: View detailed output from the 7-Zip process, including progress, warnings, and errors.
+- **Exit Code Interpretation**: Get clear, human-readable feedback on whether an operation succeeded, had warnings, or failed.
+- **Application Event Logging**: A detailed application log panel can be toggled to view debug, info, warning, and error messages for troubleshooting.
 - **Log to File**: Option to save application logs to a file for debugging and record-keeping.
 - **In-App Documentation**: Access manuals and changelogs from within the app.
-- **User-Friendly Interface**: Clean and modern UI built with Tailwind CSS.
 
 ## Prerequisites
 
-You must have the 7-Zip command-line executable (`7z.exe` on Windows) installed and accessible in your system's PATH environment variable.
+You must have a 7-Zip command-line executable (`7z.exe` on Windows, `7zz` on Linux/macOS) installed. The application will attempt to find it in your system's PATH, but you can specify the full path in the **Settings** tab.
 
 You can download 7-Zip from the official website: [www.7-zip.org](https://www.7-zip.org/)
 
 ## Installation & Usage
 
-1. **Clone the repository:**
-   ```bash
-   git clone <repository-url>
-   cd 7zip-gui
-   ```
+1.  **Clone the repository:**
+    ```bash
+    git clone <repository-url>
+    cd 7zip-gui
+    ```
 
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
 
-3. **Run the application in development mode:**
-   ```bash
-   npm start
-   ```
+3.  **Run the application in development mode:**
+    ```bash
+    npm start
+    ```
 
-4. **Package the application:**
-   To create a standalone executable, run:
-   ```bash
-   npm run package
-   ```
-   The packaged application will be located in the `dist` directory.
+4.  **Package the application:**
+    To create a standalone executable, run:
+    ```bash
+    npm run package
+    ```
+    The packaged application will be located in the `dist` directory.

@@ -1,5 +1,7 @@
+
 import React, { useState, useCallback } from 'react';
 import type { FormEvent, ChangeEvent } from 'react';
+import type { SevenZipResult } from '../types';
 
 interface ExtractFormProps {
     onStart: () => void;
@@ -18,7 +20,8 @@ const ExtractForm: React.FC<ExtractFormProps> = ({ onStart, onFinish, isRunning 
     };
 
     const handleSelectOutputDir = async () => {
-        const path = await window.electronAPI.selectOutputDir();
+        // FIX: 'selectOutputDir' does not exist on electronAPI, changed to 'selectDirectory'.
+        const path = await window.electronAPI.selectDirectory();
         if (path) {
             setOutputPath(path);
         }
@@ -46,7 +49,8 @@ const ExtractForm: React.FC<ExtractFormProps> = ({ onStart, onFinish, isRunning 
         onStart();
         try {
             const result = await window.electronAPI.run7zip({ command: '7z', args });
-            onFinish(result, true);
+            // FIX: Pass the correct argument types (string, boolean) to onFinish.
+            onFinish(result.message, result.code === 0);
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : String(error);
             onFinish(`Extraction failed: ${errorMessage}`, false);

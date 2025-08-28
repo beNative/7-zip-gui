@@ -1,5 +1,7 @@
+
 import React, { useState, useCallback } from 'react';
 import type { FormEvent, ChangeEvent } from 'react';
+import type { SevenZipResult } from '../types';
 
 interface CompressFormProps {
     onStart: () => void;
@@ -40,7 +42,8 @@ const CompressForm: React.FC<CompressFormProps> = ({ onStart, onFinish, isRunnin
         onStart();
         try {
             const result = await window.electronAPI.run7zip({ command: '7z', args });
-            onFinish(result, true);
+            // FIX: Pass the correct argument types (string, boolean) to onFinish.
+            onFinish(result.message, result.code === 0);
         } catch (error) {
             const errorMessage = error instanceof Error ? error.message : String(error);
             onFinish(`Compression failed: ${errorMessage}`, false);

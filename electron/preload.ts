@@ -1,10 +1,17 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import type { IpcRendererEvent } from 'electron';
-import type { SevenZipOptions, LogMessage } from '../types';
+import type { SevenZipOptions, SevenZipResult, LogMessage } from '../types';
 
 contextBridge.exposeInMainWorld('electronAPI', {
+  // Settings
+  getSettings: () => ipcRenderer.invoke('get-settings'),
+  setSettings: (settings: object) => ipcRenderer.invoke('set-settings', settings),
+  
+  // File System
+  selectFile: () => ipcRenderer.invoke('select-file'),
+  selectDirectory: () => ipcRenderer.invoke('select-directory'),
+  
   // 7zip operations
-  selectOutputDir: () => ipcRenderer.invoke('select-output-dir'),
   run7zip: (options: SevenZipOptions) => ipcRenderer.invoke('run-7zip', options),
   on7zipProgress: (callback: (log: string) => void) => {
     const listener = (_event: IpcRendererEvent, log: string) => callback(log);

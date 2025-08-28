@@ -1,44 +1,53 @@
-# Functional Manual: 7-Zip GUI
+# Functional Manual: 7-Zip GUI v2.0
 
-This guide explains how to use the 7-Zip GUI application for compressing and extracting files.
+This guide explains how to use the 7-Zip GUI application for a wide range of archiving tasks.
 
 ## Main Interface
 
-The application window is divided into several sections:
+The application is a comprehensive front-end for the 7-Zip command line tool.
 1.  **Header**: Contains the application title and a button to show/hide the Application Log panel.
-2.  **Operation Tabs**: Switch between 'Compress', 'Extract', and 'Info' modes.
-3.  **Options Form**: Configure the settings for the selected operation.
-4.  **Output Log**: (Visible in Compress/Extract modes) Displays real-time progress, messages, and errors from the 7-Zip process for the current operation.
-5.  **Application Log Panel**: (Optional) A panel at the bottom that shows detailed application-level logs.
+2.  **Command Tabs**: The primary navigation. Select the 7-Zip command you want to perform (e.g., `Add`, `Extract`, `List`). There are also tabs for `Settings` and `Help`.
+3.  **Command Form**: A dynamic area that shows all the relevant options (switches) for the selected command.
+4.  **Command Preview**: A read-only box that shows the exact command line that will be generated based on your selections. You can copy this for use in scripts.
+5.  **Operation Log**: Displays real-time progress, messages, and errors from the 7-Zip process for the current operation. It also shows a clear status (Success, Warning, Error) based on the exit code.
+6.  **Application Log Panel**: (Optional) A panel at the bottom that shows detailed application-level logs for debugging.
 
-## How to Compress Files
+## Common Operations
 
-1.  **Select the 'Compress' Tab**: This is the default view when the application starts.
-2.  **Select Files/Folders**: Click the file input field under "Files/Folders to Compress". You can select multiple files or an entire directory.
-3.  **Set Archive Name**: Enter the desired name for your output file (without the extension). The archive will be created in the same directory as the first file you selected.
-4.  **Choose Archive Format**: Select either `.7z` or `.zip`.
-5.  **Set Compression Level**: Choose the desired compression level. 'Normal' is a good balance, while 'Ultra' provides the best compression.
-6.  **Start Compression**: Click the "Compress" button. Monitor its progress in the Output Log.
+### How to Add Files to an Archive (Compress)
 
-## How to Extract an Archive
+1.  **Select the 'a' (Add) Tab**.
+2.  **Select Files/Folders**: Under "Files / Folders to Add", select the items you wish to compress.
+3.  **Set Archive Path**: Under "Archive", specify the full path and name for your output file (e.g., `C:\Users\You\Documents\MyArchive.zip`).
+4.  **Configure Switches**:
+    - **Archive Format (`-t`)**: Choose the type, like `7z` or `zip`.
+    - **Compression Level (`-mx`)**: '5' (Normal) is a good default. '9' (Ultra) is strongest.
+    - **Password (`-p`)**: Set a password for encryption if needed.
+5.  **Start Compression**: Click the "Run Command" button. Monitor its progress in the Operation Log.
 
-1.  **Select the 'Extract' Tab**.
-2.  **Select Archive File**: Choose the archive file you want to extract.
-3.  **Choose Output Directory**: Click "Browse" to select the destination folder.
-4.  **Start Extraction**: Click the "Extract" button and monitor the progress in the Output Log.
+### How to Extract an Archive
 
-## Information Tab
+1.  **Select the 'x' (Extract with paths) Tab**.
+2.  **Select Archive File**: In the "Archive" field, browse and select the archive file you want to extract.
+3.  **Choose Output Directory (`-o`)**: Use the "Output Directory" switch to select the destination folder.
+4.  **Start Extraction**: Click "Run Command" and monitor the progress.
 
-The 'Info' tab provides access to important project documentation:
+## Settings Tab
+
+The `Settings` tab is crucial for initial setup.
+- **Executable Path**: This must point to your `7z.exe` (Windows) or `7zz` (Linux/macOS) file. The application tries to find it, but if you see errors, configure the correct path here.
+
+## Help Tab
+
+The `Help` tab provides access to important project documentation:
 - **README**: General project overview.
 - **Functional Manual**: This document.
 - **Technical Manual**: Details about the application's architecture.
-- **Changelog**: A log of changes and new features for each version.
+- **Changelog**: A log of changes for each version.
 
 ## Application Log Panel
 
 For advanced users and debugging, the application provides a detailed logging panel.
-
-1.  **Show/Hide Panel**: Click the "Show Logs" / "Hide Logs" button in the top-right corner of the window to toggle the panel's visibility.
-2.  **Filtering Logs**: Use the checkboxes in the panel's header to show or hide messages based on their level (DEBUG, INFO, WARNING, ERROR). This is useful for isolating specific types of events.
-3.  **Save Log to File**: In the panel's footer, there is a "Save log to file" checkbox. When enabled, all application logs are automatically saved to a file (e.g., `7zip-gui-YYYY-MM-DD.log`) in the same directory as the executable. This is helpful for reporting issues.
+- **Show/Hide Panel**: Click the "Show App Logs" / "Hide App Logs" button in the top-right corner.
+- **Filtering Logs**: Use the checkboxes to filter messages by level (DEBUG, INFO, WARNING, ERROR).
+- **Save Log to File**: Enable this to save all application logs to a file in the executable's directory.
