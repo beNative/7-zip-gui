@@ -2,9 +2,11 @@
 // --- Core Application State ---
 export type CommandKey = 'a' | 'b' | 'd' | 'e' | 'h' | 'i' | 'l' | 'rn' | 't' | 'u' | 'x';
 export type ViewMode = CommandKey | 'Settings' | 'Help';
+export type Theme = 'light' | 'dark';
 
 export interface AppSettings {
     executablePath: string;
+    theme: Theme;
 }
 
 // --- 7-Zip Process Communication ---

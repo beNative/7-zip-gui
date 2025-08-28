@@ -9,6 +9,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   
   // File System
   selectFile: () => ipcRenderer.invoke('select-file'),
+  selectFiles: () => ipcRenderer.invoke('select-files'),
   selectDirectory: () => ipcRenderer.invoke('select-directory'),
   
   // 7zip operations

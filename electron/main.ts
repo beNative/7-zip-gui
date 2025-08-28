@@ -1,8 +1,8 @@
+
 import { app, BrowserWindow, ipcMain, dialog } from 'electron';
-// FIX: Explicitly import `process` to ensure correct typing for standard Node.js properties.
-// The global `process` object in this environment appears to have a broken or conflicting type definition.
-// FIX: Use `import = require()` for the `process` module, as it uses `export =`. This ensures properties like `.cwd()` and `.platform` are correctly typed.
-import process = require('process');
+// FIX: Explicitly import `process` to ensure correct typing for standard Node.js properties like `.cwd()` and `.platform()`.
+// The global `process` object in this environment can have a broken or conflicting type definition.
+import process from 'process';
 import path from 'path';
 import fs from 'fs';
 import fsp from 'fs/promises';
@@ -24,10 +24,12 @@ const SETTINGS_PATH = path.join(app.getPath('userData'), 'settings.json');
 async function readSettings() {
   try {
     const data = await fsp.readFile(SETTINGS_PATH, 'utf-8');
-    return JSON.parse(data);
+    const saved = JSON.parse(data);
+    // Ensure theme setting exists
+    return { executablePath: '7z', theme: 'dark', ...saved };
   } catch (error) {
     // If file doesn't exist or is invalid, return defaults
-    return { executablePath: '7z' };
+    return { executablePath: '7z', theme: 'dark' };
   }
 }
 
@@ -74,15 +76,23 @@ const setFileLogging = (enabled: boolean) => {
 
 function createWindow() {
   const win = new BrowserWindow({
-    width: 800,
-    height: 850,
+    width: 900,
+    height: 950,
+    minWidth: 700,
+    minHeight: 600,
     webPreferences: {
       preload: path.join(__dirname, 'preload.cjs'),
       contextIsolation: true,
       nodeIntegration: false,
     },
     title: "7-Zip GUI",
-    backgroundColor: '#0f172a'
+    backgroundColor: '#0f172a', // Default dark background
+    titleBarStyle: 'hidden',
+    titleBarOverlay: {
+      color: 'rgba(0,0,0,0)', // Transparent
+      symbolColor: '#94a3b8',
+      height: 32,
+    },
   });
 
   mainWindow = win;
@@ -123,6 +133,12 @@ ipcMain.handle('select-file', async () => {
     logger(LogLevel.DEBUG, 'Requesting to select a file.');
     const { canceled, filePaths } = await dialog.showOpenDialog({ properties: ['openFile'] });
     return canceled ? '' : filePaths[0];
+});
+
+ipcMain.handle('select-files', async () => {
+    logger(LogLevel.DEBUG, 'Requesting to select multiple files.');
+    const { canceled, filePaths } = await dialog.showOpenDialog({ properties: ['openFile', 'multiSelections'] });
+    return canceled ? [] : filePaths;
 });
 
 ipcMain.handle('select-directory', async () => {

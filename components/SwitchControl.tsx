@@ -11,17 +11,27 @@ interface SwitchControlProps {
 const SwitchControl: React.FC<SwitchControlProps> = ({ schema, value, onChange }) => {
     const { id, label, description, control, options, pathType } = schema;
 
-    const handlePathSelection = async (type: 'file' | 'directory' | undefined) => {
+    const handlePathSelection = async (type: 'file' | 'directory' | 'multi-file' | undefined) => {
         if (!window.electronAPI) return;
-        const path = type === 'directory' 
-            ? await window.electronAPI.selectDirectory() 
-            : await window.electronAPI.selectFile();
-        if (path) {
-            onChange(id, path);
+
+        let resultPath: string | string[] | undefined;
+        if (type === 'directory') {
+            resultPath = await window.electronAPI.selectDirectory();
+        } else if (type === 'multi-file') {
+             resultPath = await window.electronAPI.selectFiles();
+        } else {
+             resultPath = await window.electronAPI.selectFile();
+        }
+
+        if (resultPath && resultPath.length > 0) {
+            onChange(id, resultPath);
         }
     };
     
     const renderControl = () => {
+        const baseInputClass = "w-full bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500";
+        const browseButtonClass = "px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm text-sm font-medium text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-slate-800";
+
         switch (control) {
             case SwitchControlType.Checkbox:
                 return (
@@ -30,9 +40,9 @@ const SwitchControl: React.FC<SwitchControlProps> = ({ schema, value, onChange }
                             type="checkbox"
                             checked={!!value}
                             onChange={(e: ChangeEvent<HTMLInputElement>) => onChange(id, e.target.checked)}
-                             className="form-checkbox h-4 w-4 rounded bg-slate-700 border-slate-600 text-cyan-500 focus:ring-cyan-600"
+                             className="form-checkbox h-4 w-4 rounded bg-slate-200 dark:bg-slate-700 border-slate-400 dark:border-slate-600 text-blue-600 focus:ring-blue-500"
                         />
-                        <span className="text-sm text-slate-300">{label}</span>
+                        <span className="text-sm text-slate-700 dark:text-slate-300">{label}</span>
                     </label>
                 );
 
@@ -42,7 +52,7 @@ const SwitchControl: React.FC<SwitchControlProps> = ({ schema, value, onChange }
                         type="text"
                         value={value || ''}
                         onChange={(e: ChangeEvent<HTMLInputElement>) => onChange(id, e.target.value)}
-                        className="w-full bg-slate-700 border border-slate-600 rounded-md shadow-sm px-3 py-2 text-white focus:outline-none focus:ring-cyan-500 focus:border-cyan-500"
+                        className={baseInputClass}
                     />
                 );
 
@@ -51,7 +61,7 @@ const SwitchControl: React.FC<SwitchControlProps> = ({ schema, value, onChange }
                     <select
                         value={value || ''}
                         onChange={(e: ChangeEvent<HTMLSelectElement>) => onChange(id, e.target.value)}
-                        className="w-full bg-slate-700 border border-slate-600 rounded-md shadow-sm px-3 py-2 text-white focus:outline-none focus:ring-cyan-500 focus:border-cyan-500"
+                        className={baseInputClass}
                     >
                         {options?.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
                     </select>
@@ -65,12 +75,12 @@ const SwitchControl: React.FC<SwitchControlProps> = ({ schema, value, onChange }
                             value={value || ''}
                             onChange={(e: ChangeEvent<HTMLInputElement>) => onChange(id, e.target.value)}
                             placeholder={`Enter path or click 'Browse'`}
-                            className="flex-grow bg-slate-700 border border-slate-600 rounded-md shadow-sm px-3 py-2 text-white focus:outline-none focus:ring-cyan-500 focus:border-cyan-500"
+                            className={`flex-grow ${baseInputClass}`}
                         />
                         <button
                             type="button"
                             onClick={() => handlePathSelection(pathType)}
-                            className="px-4 py-2 border border-slate-600 rounded-md shadow-sm text-sm font-medium text-slate-300 bg-slate-700 hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 focus:ring-offset-slate-800"
+                            className={browseButtonClass}
                         >
                             Browse
                         </button>
@@ -79,23 +89,17 @@ const SwitchControl: React.FC<SwitchControlProps> = ({ schema, value, onChange }
             
             case SwitchControlType.MultiPathInput:
                  const files = (value as string[] || []);
-                 const handleMultiFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-                     if (e.target.files) {
-                         // The 'path' property is added by Electron
-                         const paths = Array.from(e.target.files).map(f => (f as any).path);
-                         onChange(id, paths);
-                     }
-                 };
                  return (
                      <div>
-                        <input
-                            type="file"
-                            multiple
-                            onChange={handleMultiFileChange}
-                            className="block w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-slate-700 file:text-cyan-400 hover:file:bg-slate-600"
-                        />
+                        <button
+                            type="button"
+                            onClick={() => handlePathSelection('multi-file')}
+                            className={`${browseButtonClass} w-full justify-center`}
+                        >
+                           Select Files / Folders...
+                        </button>
                          {files.length > 0 && (
-                            <div className="mt-2 text-xs text-slate-400 border border-slate-700 rounded-md p-2 max-h-20 overflow-y-auto">
+                            <div className="mt-2 text-xs text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700 rounded-md p-2 max-h-20 overflow-y-auto">
                                 {files.length} item(s) selected: {files[0]}{files.length > 1 ? ` and ${files.length - 1} more...` : ''}
                             </div>
                          )}
@@ -118,7 +122,7 @@ const SwitchControl: React.FC<SwitchControlProps> = ({ schema, value, onChange }
 
     return (
         <div title={description}>
-            <label className="block text-sm font-medium text-slate-300 mb-1">{label}</label>
+            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{label}</label>
             {renderControl()}
         </div>
     );

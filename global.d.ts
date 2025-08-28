@@ -11,6 +11,7 @@ declare global {
       
       // File System
       selectFile: () => Promise<string>;
+      selectFiles: () => Promise<string[]>;
       selectDirectory: () => Promise<string>;
 
       // 7zip

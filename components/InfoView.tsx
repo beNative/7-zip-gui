@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -32,11 +31,11 @@ const InfoView: React.FC = () => {
     }, [activeDoc, loadContent]);
 
     const getButtonClass = (doc: Doc) => {
-        const base = "px-4 py-2 text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-cyan-500 transition-colors duration-200";
+        const base = "px-4 py-2 text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-slate-800 focus:ring-blue-500 transition-colors duration-200";
         if (activeDoc === doc) {
-            return `${base} bg-cyan-600 text-white`;
+            return `${base} bg-blue-500 text-white`;
         }
-        return `${base} bg-slate-700 text-slate-300 hover:bg-slate-600`;
+        return `${base} bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600`;
     };
 
     const docs: { id: Doc, title: string }[] = [
@@ -47,16 +46,16 @@ const InfoView: React.FC = () => {
     ];
 
     return (
-        <div className="space-y-4">
-            <div className="flex flex-wrap gap-2 p-1 bg-slate-900/50 rounded-lg">
+        <div className="space-y-4 h-full flex flex-col">
+            <div className="flex flex-wrap gap-2 p-1 bg-slate-100 dark:bg-slate-900/50 rounded-lg">
                 {docs.map(doc => (
                     <button key={doc.id} className={getButtonClass(doc.id)} onClick={() => setActiveDoc(doc.id)}>
                         {doc.title}
                     </button>
                 ))}
             </div>
-            <div className="prose prose-invert prose-sm sm:prose-base max-w-none bg-slate-900/50 p-4 rounded-lg border border-slate-700 h-96 overflow-y-auto">
-                {error ? <p className="text-red-400">{error}</p> : <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>}
+            <div className="prose prose-sm sm:prose-base max-w-none prose-slate dark:prose-invert bg-slate-100 dark:bg-slate-900/50 p-4 rounded-lg border border-slate-200 dark:border-slate-700 flex-grow overflow-y-auto">
+                {error ? <p className="text-red-500">{error}</p> : <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>}
             </div>
         </div>
     );

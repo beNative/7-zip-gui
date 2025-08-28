@@ -42,8 +42,8 @@ const CommandForm: React.FC<CommandFormProps> = ({ commandKey, onStart, onFinish
     }, [executablePath, commandKey, state, onStart, onFinish]);
     
     return (
-        <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-4 max-h-[40vh] overflow-y-auto pr-2">
+        <form onSubmit={handleSubmit} className="space-y-6 flex flex-col h-full">
+            <div className="space-y-4 flex-grow overflow-y-auto pr-2">
                 {commandSchema.switches.map(switchId => {
                     const switchSchema = SWITCHES[switchId];
                     if (!switchSchema) return null;
@@ -57,6 +57,13 @@ const CommandForm: React.FC<CommandFormProps> = ({ commandKey, onStart, onFinish
                         />
                     );
                 })}
+                 {commandSchema.switches.length === 0 && (
+                    <div className="text-center text-slate-500 dark:text-slate-400 py-8">
+                        <p className="font-semibold">{commandSchema.label} Command</p>
+                        <p className="text-sm">{commandSchema.description}</p>
+                        <p className="text-sm mt-2">This command runs without additional options.</p>
+                    </div>
+                )}
             </div>
 
             <CommandPreview executablePath={executablePath} commandKey={commandKey} state={state} />
@@ -64,7 +71,7 @@ const CommandForm: React.FC<CommandFormProps> = ({ commandKey, onStart, onFinish
             <button
                 type="submit"
                 disabled={isRunning}
-                className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 focus:ring-offset-slate-800 disabled:bg-slate-600 disabled:cursor-not-allowed"
+                className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 dark:focus:ring-offset-slate-800 disabled:bg-slate-400 dark:disabled:bg-slate-600 disabled:from-slate-400 dark:disabled:from-slate-600 disabled:cursor-not-allowed transition-all duration-200"
             >
                 {isRunning ? 'Running...' : 'Run Command'}
             </button>

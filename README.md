@@ -1,20 +1,26 @@
-# 7-Zip GUI - v2.0
+# 7-Zip GUI - v2.1
 
 A modern, powerful, and complete graphical user interface for the 7-Zip command-line tool. Built with Electron, React, and TypeScript, this application provides a comprehensive and intuitive way to handle all your file compression and archiving needs.
 
 This application is designed for both beginners and power users, providing sensible defaults while exposing the full capabilities of the 7-Zip engine.
 
+![Dark Mode Screenshot](https://i.imgur.com/uW6g2i1.png)
+_Dark Mode Interface_
+
+
+_Light Mode Interface_
+
+
 ## Features
 
+- **Modern Desktop UI**: A clean, polished interface with both **Light and Dark themes**.
 - **Full Command Support**: A dedicated UI for all major 7-Zip commands: `Add`, `Extract`, `Test`, `List`, `Delete`, `Update`, `Benchmark`, `Hash`, and more.
 - **Exhaustive Switch Coverage**: A dynamic, context-aware UI to control a wide range of 7-Zip switches for fine-grained control over your operations.
 - **Live Command Preview**: See the exact CLI command that will be executed, updated in real-time. Perfect for learning and scripting.
-- **Schema-Driven UI**: The interface is generated from a central schema, ensuring accuracy and making it easy to support future 7-Zip versions.
+- **Resizable Log Panel**: A dockable, resizable panel at the bottom provides a unified view for both operation progress and detailed application logs.
 - **Executable Management**: Auto-detects your `7z`/`7zz`/`7za` executable, with the ability to override the path in the Settings panel.
 - **Real-time Logging**: View detailed output from the 7-Zip process, including progress, warnings, and errors.
 - **Exit Code Interpretation**: Get clear, human-readable feedback on whether an operation succeeded, had warnings, or failed.
-- **Application Event Logging**: A detailed application log panel can be toggled to view debug, info, warning, and error messages for troubleshooting.
-- **Log to File**: Option to save application logs to a file for debugging and record-keeping.
 - **In-App Documentation**: Access manuals and changelogs from within the app.
 
 ## Prerequisites

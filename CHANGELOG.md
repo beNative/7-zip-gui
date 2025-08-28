@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.0] - 2024-05-24
+
+### Added
+- **Complete UI Modernization**: The entire application has been redesigned with a more modern, professional look and feel, including a new color palette, improved spacing, and better visual hierarchy.
+- **Light & Dark Themes**: Added a theme switcher in the Settings tab to toggle between a new light mode and the classic dark mode.
+- **Resizable Log Panel**: The log area is now a resizable, dockable panel at the bottom of the application.
+- **Unified Log View**: The Operation Log and Application Log are now in a tabbed view inside the new resizable panel, decluttering the UI.
+- **Improved UX**: Added icons and subtle transitions to improve usability and visual appeal.
+- The application window now features a custom, frameless title bar.
+
+### Changed
+- The main action button ("Run Command") has a more prominent, colorful design.
+- The file/folder input controls have been updated for a better user experience.
+
 ## [2.0.0] - 2024-05-23
 
 ### Added
