@@ -62,10 +62,10 @@ const SwitchControl: React.FC<SwitchControlProps> = ({ schema, value, onChange }
                     <div className="flex items-center space-x-2">
                         <input
                             type="text"
-                            readOnly
                             value={value || ''}
-                            placeholder={`Click 'Browse' to select a ${pathType}`}
-                            className="flex-grow bg-slate-700 border border-slate-600 rounded-md shadow-sm px-3 py-2 text-white focus:outline-none"
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => onChange(id, e.target.value)}
+                            placeholder={`Enter path or click 'Browse'`}
+                            className="flex-grow bg-slate-700 border border-slate-600 rounded-md shadow-sm px-3 py-2 text-white focus:outline-none focus:ring-cyan-500 focus:border-cyan-500"
                         />
                         <button
                             type="button"
@@ -91,9 +91,6 @@ const SwitchControl: React.FC<SwitchControlProps> = ({ schema, value, onChange }
                         <input
                             type="file"
                             multiple
-                            // @ts-ignore - allow webkitdirectory attribute
-                            webkitdirectory=""
-                            directory=""
                             onChange={handleMultiFileChange}
                             className="block w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-slate-700 file:text-cyan-400 hover:file:bg-slate-600"
                         />

@@ -1,8 +1,8 @@
-
 import { app, BrowserWindow, ipcMain, dialog } from 'electron';
 // FIX: Explicitly import `process` to ensure correct typing for standard Node.js properties.
 // The global `process` object in this environment appears to have a broken or conflicting type definition.
-import * as process from 'process';
+// FIX: Use `import = require()` for the `process` module, as it uses `export =`. This ensures properties like `.cwd()` and `.platform` are correctly typed.
+import process = require('process');
 import path from 'path';
 import fs from 'fs';
 import fsp from 'fs/promises';
