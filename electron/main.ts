@@ -1,18 +1,17 @@
+
 import { app, BrowserWindow, ipcMain, dialog } from 'electron';
+// FIX: Explicitly import `process` to ensure correct typing for standard Node.js properties.
+// The global `process` object in this environment appears to have a broken or conflicting type definition.
+import * as process from 'process';
 import path from 'path';
 import fs from 'fs';
 import fsp from 'fs/promises';
 import { spawn } from 'child_process';
-import { fileURLToPath } from 'url';
 import { LogLevel, type LogMessage } from '../types';
 
-// FIX: The `process` object is a global in Node.js environments like Electron's main process.
-// Importing it explicitly was causing TypeScript to use a generic, incorrect type, leading to
-// errors for properties like `.cwd()`, `.platform`, and `.resourcesPath`. Removing the incorrect
-// import allows TypeScript to use the correct global type definitions.
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// FIX: Removed ESM-specific `import.meta.url` and `fileURLToPath`.
+// The build target is CommonJS (`.cjs`), where `__dirname` is a global variable.
+// Using `import.meta.url` in a CJS context results in `undefined` and causes a crash on startup.
 const isDev = !app.isPackaged;
 
 let mainWindow: BrowserWindow | null = null;
@@ -134,7 +133,9 @@ ipcMain.handle('select-directory', async () => {
 
 ipcMain.handle('get-doc', async (_, docName: string) => {
   try {
-    const basePath = isDev ? process.cwd() : process.resourcesPath;
+    // FIX: Use a type assertion for the Electron-specific `resourcesPath` property,
+    // as explicitly importing `process` provides only Node.js standard types.
+    const basePath = isDev ? process.cwd() : (process as any).resourcesPath;
     const filePath = path.join(basePath, docName);
     const content = await fsp.readFile(filePath, 'utf-8');
     logger(LogLevel.DEBUG, `Successfully read document: ${docName}`);
