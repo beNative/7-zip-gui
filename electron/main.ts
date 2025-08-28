@@ -1,5 +1,4 @@
 import { app, BrowserWindow, ipcMain, dialog } from 'electron';
-// FIX: Removed `import process from 'process';` to allow use of the global `process` object, which has correct typings for `cwd` and `platform`.
 import path from 'path';
 import fs from 'fs';
 import fsp from 'fs/promises';
@@ -31,7 +30,9 @@ const logger = (level: LogLevel, message: string) => {
     logStream.write(formattedMessage);
   }
   
-  mainWindow?.webContents.send('log-message', logEntry);
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.webContents.send('log-message', logEntry);
+  }
   console.log(formattedMessage.trim());
 };
 
