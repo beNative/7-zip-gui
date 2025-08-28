@@ -1,9 +1,13 @@
+
 import { app, BrowserWindow, ipcMain, dialog } from 'electron';
 import path from 'path';
 import fs from 'fs';
 import fsp from 'fs/promises';
 import { spawn } from 'child_process';
 import { LogLevel, type LogMessage } from '../types';
+
+// FIX: The global `process` object was incorrectly typed, causing errors when accessing `process.cwd()` and `process.platform`. Importing `process` explicitly from the 'process' module provides the correct `NodeJS.Process` type.
+import process from 'process';
 
 const isDev = !app.isPackaged;
 
@@ -15,7 +19,6 @@ const SETTINGS_PATH = path.join(app.getPath('userData'), 'settings.json');
 
 // --- Logger Implementation ---
 const getLogFilePath = () => {
-  // FIX: Removed `import process from 'process'` to use the global Node.js process object which has the correct typings for `cwd()` and `platform`.
   const logDir = isDev ? process.cwd() : path.dirname(app.getPath('exe'));
   const date = new Date().toISOString().split('T')[0];
   return path.join(logDir, `7zip-gui-${date}.log`);
