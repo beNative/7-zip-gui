@@ -1,0 +1,5 @@
+{
+  "name": "7-Zip GUI",
+  "description": "A modern graphical user interface for the 7-Zip command-line tool on Windows, built with React and Electron. It allows for easy file compression and extraction with various format and level options.",
+  "requestFramePermissions": []
+}

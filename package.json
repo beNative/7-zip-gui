@@ -1,0 +1,66 @@
+{
+  "name": "7zip-gui",
+  "version": "1.2.0",
+  "description": "A GUI for 7zip on Windows",
+  "main": "dist/main.js",
+  "type": "module",
+  "scripts": {
+    "start": "npm run build && electron .",
+    "build": "npm run build:renderer && npm run build:main && npm run build:preload",
+    "build:renderer": "esbuild index.tsx --bundle --outfile=dist/renderer.js --platform=browser --format=esm --jsx=automatic --sourcemap",
+    "build:main": "esbuild electron/main.ts --bundle --outfile=dist/main.js --platform=node --format=cjs --external:electron --sourcemap",
+    "build:preload": "esbuild electron/preload.ts --bundle --outfile=dist/preload.js --platform=node --format=cjs --external:electron --sourcemap",
+    "package": "npm run build && electron-builder"
+  },
+  "keywords": [
+    "7zip",
+    "electron",
+    "react",
+    "gui"
+  ],
+  "author": "AI",
+  "license": "MIT",
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-markdown": "^9.0.1",
+    "remark-gfm": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "electron": "^30.0.1",
+    "electron-builder": "^24.13.3",
+    "esbuild": "^0.21.3",
+    "typescript": "^5.4.5",
+    "tailwindcss": "^3.4.3"
+  },
+  "build": {
+    "appId": "com.example.7zipgui",
+    "productName": "7-Zip GUI",
+    "files": [
+      "dist/**/*",
+      "index.html"
+    ],
+    "extraResources": [
+      {
+        "from": "./",
+        "to": "./",
+        "filter": [
+          "README.md",
+          "FUNCTIONAL_MANUAL.md",
+          "TECHNICAL_MANUAL.md",
+          "CHANGELOG.md"
+        ]
+      }
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}
