@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.2.0] - 2024-05-25
+
+### Added
+- **Comprehensive Status Bar**: A new persistent status bar at the bottom of the window displays application status (Idle, Running, Success, Error), the configured executable path, and a log panel toggle.
+- **Collapsible Log Panel**: The entire log panel can now be shown or hidden with a button in the status bar, allowing the main content to use the full application height.
+- **Rich Application Logging**: The application log is now fully instrumented, automatically recording key events like startup, settings changes, view navigation, and file dialog usage.
+- **Vibrant Button Colors**: Primary action buttons now use a vibrant cyan-to-blue gradient, and secondary buttons have a consistent, modern style.
+
+### Changed
+- **Full Window Layout**: The UI now utilizes the full client area, removing the centered card layout for a more expansive, modern desktop application feel.
+- The "Operation Log" and "Application Log" have been moved inside the new collapsible panel.
+
+### Fixed
+- **Theme Toggle**: The light/dark mode toggle was not working because Tailwind CSS was not configured for class-based theme switching. This has been fixed.
+
 ## [2.1.0] - 2024-05-24
 
 ### Added

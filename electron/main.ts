@@ -1,17 +1,11 @@
-
 import { app, BrowserWindow, ipcMain, dialog } from 'electron';
-// FIX: Explicitly import `process` to ensure correct typing for standard Node.js properties like `.cwd()` and `.platform()`.
-// The global `process` object in this environment can have a broken or conflicting type definition.
-import process from 'process';
+// FIX: Removed `import process from 'process';` to allow use of the global `process` object, which has correct typings for `cwd` and `platform`.
 import path from 'path';
 import fs from 'fs';
 import fsp from 'fs/promises';
 import { spawn } from 'child_process';
 import { LogLevel, type LogMessage } from '../types';
 
-// FIX: Removed ESM-specific `import.meta.url` and `fileURLToPath`.
-// The build target is CommonJS (`.cjs`), where `__dirname` is a global variable.
-// Using `import.meta.url` in a CJS context results in `undefined` and causes a crash on startup.
 const isDev = !app.isPackaged;
 
 let mainWindow: BrowserWindow | null = null;
@@ -19,24 +13,6 @@ let logStream: fs.WriteStream | null = null;
 let isFileLoggingEnabled = false;
 
 const SETTINGS_PATH = path.join(app.getPath('userData'), 'settings.json');
-
-// --- Settings Management ---
-async function readSettings() {
-  try {
-    const data = await fsp.readFile(SETTINGS_PATH, 'utf-8');
-    const saved = JSON.parse(data);
-    // Ensure theme setting exists
-    return { executablePath: '7z', theme: 'dark', ...saved };
-  } catch (error) {
-    // If file doesn't exist or is invalid, return defaults
-    return { executablePath: '7z', theme: 'dark' };
-  }
-}
-
-async function writeSettings(settings: object) {
-  await fsp.writeFile(SETTINGS_PATH, JSON.stringify(settings, null, 2));
-}
-
 
 // --- Logger Implementation ---
 const getLogFilePath = () => {
@@ -74,7 +50,34 @@ const setFileLogging = (enabled: boolean) => {
 };
 // --- End Logger ---
 
+
+// --- Settings Management ---
+async function readSettings() {
+  logger(LogLevel.DEBUG, `Reading settings from ${SETTINGS_PATH}`);
+  try {
+    const data = await fsp.readFile(SETTINGS_PATH, 'utf-8');
+    const saved = JSON.parse(data);
+    const settings = { executablePath: '7z', theme: 'dark', ...saved };
+    logger(LogLevel.INFO, `Settings loaded successfully.`);
+    return settings;
+  } catch (error) {
+    logger(LogLevel.WARNING, `Failed to read settings file, returning defaults. Error: ${error}`);
+    return { executablePath: '7z', theme: 'dark' };
+  }
+}
+
+async function writeSettings(settings: object) {
+  logger(LogLevel.INFO, `Writing settings to ${SETTINGS_PATH}`);
+  try {
+    await fsp.writeFile(SETTINGS_PATH, JSON.stringify(settings, null, 2));
+    logger(LogLevel.DEBUG, `Settings saved successfully.`);
+  } catch (error) {
+    logger(LogLevel.ERROR, `Failed to write settings. Error: ${error}`);
+  }
+}
+
 function createWindow() {
+  logger(LogLevel.INFO, 'Creating application window...');
   const win = new BrowserWindow({
     width: 900,
     height: 950,
@@ -89,7 +92,7 @@ function createWindow() {
     backgroundColor: '#0f172a', // Default dark background
     titleBarStyle: 'hidden',
     titleBarOverlay: {
-      color: 'rgba(0,0,0,0)', // Transparent
+      color: 'rgba(0,0,0,0)',
       symbolColor: '#94a3b8',
       height: 32,
     },
@@ -102,7 +105,10 @@ function createWindow() {
   // win.webContents.openDevTools();
 }
 
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+    logger(LogLevel.INFO, `Application ready. Version: ${app.getVersion()}`);
+    createWindow();
+});
 
 app.on('window-all-closed', () => {
   logger(LogLevel.INFO, 'All windows closed. Quitting application.');
@@ -116,41 +122,41 @@ app.on('window-all-closed', () => {
 
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
+    logger(LogLevel.INFO, 'App activated, creating new window.');
     createWindow();
   }
 });
 
 // --- IPC Handlers ---
-ipcMain.handle('get-settings', async () => {
-  return await readSettings();
-});
-
-ipcMain.handle('set-settings', async (_, settings) => {
-  await writeSettings(settings);
-});
+ipcMain.handle('get-settings', async () => await readSettings());
+ipcMain.handle('set-settings', async (_, settings) => await writeSettings(settings));
 
 ipcMain.handle('select-file', async () => {
-    logger(LogLevel.DEBUG, 'Requesting to select a file.');
+    logger(LogLevel.DEBUG, 'Requesting to select a single file.');
     const { canceled, filePaths } = await dialog.showOpenDialog({ properties: ['openFile'] });
+    if(canceled) logger(LogLevel.DEBUG, 'File selection cancelled.');
+    else logger(LogLevel.INFO, `File selected: ${filePaths[0]}`);
     return canceled ? '' : filePaths[0];
 });
 
 ipcMain.handle('select-files', async () => {
     logger(LogLevel.DEBUG, 'Requesting to select multiple files.');
     const { canceled, filePaths } = await dialog.showOpenDialog({ properties: ['openFile', 'multiSelections'] });
+    if(canceled) logger(LogLevel.DEBUG, 'Multi-file selection cancelled.');
+    else logger(LogLevel.INFO, `${filePaths.length} files selected.`);
     return canceled ? [] : filePaths;
 });
 
 ipcMain.handle('select-directory', async () => {
   logger(LogLevel.DEBUG, 'Requesting to select a directory.');
   const { canceled, filePaths } = await dialog.showOpenDialog({ properties: ['openDirectory'] });
+  if(canceled) logger(LogLevel.DEBUG, 'Directory selection cancelled.');
+  else logger(LogLevel.INFO, `Directory selected: ${filePaths[0]}`);
   return canceled ? '' : filePaths[0];
 });
 
 ipcMain.handle('get-doc', async (_, docName: string) => {
   try {
-    // FIX: Use a type assertion for the Electron-specific `resourcesPath` property,
-    // as explicitly importing `process` provides only Node.js standard types.
     const basePath = isDev ? process.cwd() : (process as any).resourcesPath;
     const filePath = path.join(basePath, docName);
     const content = await fsp.readFile(filePath, 'utf-8');
@@ -163,7 +169,13 @@ ipcMain.handle('get-doc', async (_, docName: string) => {
 });
 
 ipcMain.handle('toggle-file-logging', (_, enabled: boolean) => {
+  logger(LogLevel.INFO, `Request to ${enabled ? 'enable' : 'disable'} file logging.`);
   setFileLogging(enabled);
+});
+
+// Added to allow renderer process to log messages centrally
+ipcMain.on('log-from-renderer', (_, { level, message }: { level: LogLevel, message: string }) => {
+    logger(level, message);
 });
 
 ipcMain.handle('run-7zip', (event, { command, args }) => {
@@ -188,16 +200,11 @@ ipcMain.handle('run-7zip', (event, { command, args }) => {
       });
 
       sevenZip.on('close', (code) => {
-        const result = {
-            code,
-            stdout,
-            stderr,
-            message: `Process exited with code ${code}.`
-        };
+        const result = { code, stdout, stderr, message: `Process exited with code ${code}.` };
         if (code === 0) {
           logger(LogLevel.INFO, '7-Zip process completed successfully.');
         } else {
-          logger(LogLevel.ERROR, `7-Zip process exited with code ${code}. Stderr: ${stderr}`);
+          logger(LogLevel.ERROR, `7-Zip process exited with code ${code}. Stderr: ${stderr.trim()}`);
         }
         resolve(result);
       });
@@ -205,24 +212,14 @@ ipcMain.handle('run-7zip', (event, { command, args }) => {
       sevenZip.on('error', (err) => {
         logger(LogLevel.ERROR, `Failed to spawn process. Error: ${err.message}`);
         event.sender.send('7zip-progress', `SPAWN ERROR: ${err.message}. Is '${command}' in your system's PATH?`);
-        resolve({
-            code: -1, // Custom code for spawn error
-            stdout: '',
-            stderr: err.message,
-            message: `Failed to start 7-Zip process.`
-        });
+        resolve({ code: -1, stdout: '', stderr: err.message, message: `Failed to start 7-Zip process.` });
       });
 
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : String(err);
       logger(LogLevel.ERROR, `Critical error trying to start 7-Zip process: ${errorMessage}`);
       event.sender.send('7zip-progress', `ERROR: Failed to start 7-Zip process. ${errorMessage}`);
-      resolve({
-          code: -1,
-          stdout: '',
-          stderr: errorMessage,
-          message: `Failed to start 7-Zip process.`
-      });
+      resolve({ code: -1, stdout: '', stderr: errorMessage, message: `Failed to start 7-Zip process.` });
     }
   });
 });

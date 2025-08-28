@@ -1,25 +1,26 @@
-# 7-Zip GUI - v2.1
+# 7-Zip GUI - v2.2
 
 A modern, powerful, and complete graphical user interface for the 7-Zip command-line tool. Built with Electron, React, and TypeScript, this application provides a comprehensive and intuitive way to handle all your file compression and archiving needs.
 
 This application is designed for both beginners and power users, providing sensible defaults while exposing the full capabilities of the 7-Zip engine.
 
 ![Dark Mode Screenshot](https://i.imgur.com/uW6g2i1.png)
-_Dark Mode Interface_
+_Dark Mode Interface with expanded log panel_
 
 
-_Light Mode Interface_
+_Light Mode Interface with collapsed log panel_
 
 
 ## Features
 
-- **Modern Desktop UI**: A clean, polished interface with both **Light and Dark themes**.
+- **Modern Desktop UI**: A clean, full-window interface with both **Light and Dark themes**.
 - **Full Command Support**: A dedicated UI for all major 7-Zip commands: `Add`, `Extract`, `Test`, `List`, `Delete`, `Update`, `Benchmark`, `Hash`, and more.
 - **Exhaustive Switch Coverage**: A dynamic, context-aware UI to control a wide range of 7-Zip switches for fine-grained control over your operations.
 - **Live Command Preview**: See the exact CLI command that will be executed, updated in real-time. Perfect for learning and scripting.
-- **Resizable Log Panel**: A dockable, resizable panel at the bottom provides a unified view for both operation progress and detailed application logs.
+- **Collapsible Log Panel**: A dockable, resizable panel at the bottom provides a unified view for both operation progress and detailed application logs. Show or hide it with a single click.
+- **Comprehensive Status Bar**: Get at-a-glance feedback on application status, configured executable, and log panel visibility.
 - **Executable Management**: Auto-detects your `7z`/`7zz`/`7za` executable, with the ability to override the path in the Settings panel.
-- **Real-time Logging**: View detailed output from the 7-Zip process, including progress, warnings, and errors.
+- **Rich Application Logging**: The application log tracks all major events, from startup to settings changes, providing excellent debugging insight.
 - **Exit Code Interpretation**: Get clear, human-readable feedback on whether an operation succeeded, had warnings, or failed.
 - **In-App Documentation**: Access manuals and changelogs from within the app.
 

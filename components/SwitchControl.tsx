@@ -1,6 +1,7 @@
 import React from 'react';
 import type { ChangeEvent } from 'react';
 import { SwitchSchema, SwitchControlType } from '../types';
+import { LogLevel } from '../types';
 
 interface SwitchControlProps {
     schema: SwitchSchema;
@@ -13,7 +14,8 @@ const SwitchControl: React.FC<SwitchControlProps> = ({ schema, value, onChange }
 
     const handlePathSelection = async (type: 'file' | 'directory' | 'multi-file' | undefined) => {
         if (!window.electronAPI) return;
-
+        
+        window.electronAPI.log(LogLevel.DEBUG, `Opening file dialog for type: ${type || 'file'}`);
         let resultPath: string | string[] | undefined;
         if (type === 'directory') {
             resultPath = await window.electronAPI.selectDirectory();
@@ -29,8 +31,8 @@ const SwitchControl: React.FC<SwitchControlProps> = ({ schema, value, onChange }
     };
     
     const renderControl = () => {
-        const baseInputClass = "w-full bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-blue-500 focus:border-blue-500";
-        const browseButtonClass = "px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm text-sm font-medium text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-slate-800";
+        const baseInputClass = "w-full bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-offset-1 dark:focus:ring-offset-slate-800 focus:ring-blue-500 focus:border-blue-500 transition-colors";
+        const browseButtonClass = "px-4 py-2 border border-slate-300 dark:border-slate-600 rounded-md shadow-sm text-sm font-medium text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-slate-800 transition-colors";
 
         switch (control) {
             case SwitchControlType.Checkbox:

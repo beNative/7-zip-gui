@@ -71,7 +71,7 @@ const CommandForm: React.FC<CommandFormProps> = ({ commandKey, onStart, onFinish
             <button
                 type="submit"
                 disabled={isRunning}
-                className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 dark:focus:ring-offset-slate-800 disabled:bg-slate-400 dark:disabled:bg-slate-600 disabled:from-slate-400 dark:disabled:from-slate-600 disabled:cursor-not-allowed transition-all duration-200"
+                className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 dark:focus:ring-offset-slate-800 disabled:bg-slate-400 dark:disabled:bg-slate-600 disabled:from-slate-400 dark:disabled:from-slate-600 disabled:to-slate-500 dark:disabled:to-slate-700 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-[1.02]"
             >
                 {isRunning ? 'Running...' : 'Run Command'}
             </button>

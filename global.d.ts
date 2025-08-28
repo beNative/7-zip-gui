@@ -1,4 +1,4 @@
-import type { SevenZipOptions, SevenZipResult, LogMessage, AppSettings } from './types';
+import type { SevenZipOptions, SevenZipResult, LogMessage, AppSettings, LogLevel } from './types';
 
 export {};
 
@@ -22,6 +22,7 @@ declare global {
       getDoc: (docName: string) => Promise<string>;
       
       // Logging
+      log: (level: LogLevel, message: string) => void;
       toggleFileLogging: (enabled: boolean) => Promise<void>;
       onLogMessage: (callback: (log: LogMessage) => void) => () => void;
     };

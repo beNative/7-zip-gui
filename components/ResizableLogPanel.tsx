@@ -1,9 +1,9 @@
 import React, { useState, useCallback, useRef, MouseEvent } from 'react';
 import LogView from './LogView';
 import LoggingPanel from './LoggingPanel';
-import { LogMessage } from '../types';
 
 interface ResizableLogPanelProps {
+    isVisible: boolean;
     operationLogs: string[];
     progress: number;
     isRunning: boolean;
@@ -16,7 +16,7 @@ type LogTab = 'operation' | 'application';
 const MIN_HEIGHT = 100;
 const DEFAULT_HEIGHT = 250;
 
-const ResizableLogPanel: React.FC<ResizableLogPanelProps> = ({ operationLogs, progress, isRunning, exitCode, isCommandView }) => {
+const ResizableLogPanel: React.FC<ResizableLogPanelProps> = ({ isVisible, operationLogs, progress, isRunning, exitCode, isCommandView }) => {
     const [height, setHeight] = useState(DEFAULT_HEIGHT);
     const [activeTab, setActiveTab] = useState<LogTab>('operation');
     const isResizing = useRef(false);
@@ -30,7 +30,7 @@ const ResizableLogPanel: React.FC<ResizableLogPanelProps> = ({ operationLogs, pr
 
     const handleMouseMove = useCallback((e: globalThis.MouseEvent) => {
         if (!isResizing.current) return;
-        const newHeight = window.innerHeight - e.clientY;
+        const newHeight = window.innerHeight - e.clientY - 30; // 30px for status bar
         if (newHeight >= MIN_HEIGHT) {
             setHeight(newHeight);
         }
@@ -52,8 +52,8 @@ const ResizableLogPanel: React.FC<ResizableLogPanelProps> = ({ operationLogs, pr
 
     return (
         <div 
-            className="bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 shadow-t-lg transition-colors duration-300" 
-            style={{ height: `${height}px` }}
+            className={`bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 shadow-t-lg transition-all duration-300 ease-in-out overflow-hidden flex-shrink-0`}
+            style={{ maxHeight: isVisible ? '80vh' : '0', height: isVisible ? `${height}px` : '0' }}
         >
             <div 
                 className="w-full h-2 cursor-row-resize flex items-center justify-center group"

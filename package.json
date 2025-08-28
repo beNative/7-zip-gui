@@ -1,6 +1,6 @@
 {
   "name": "7zip-gui",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "A GUI for 7zip on Windows",
   "main": "dist/main.cjs",
   "type": "module",

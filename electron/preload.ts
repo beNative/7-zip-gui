@@ -1,6 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import type { IpcRendererEvent } from 'electron';
-import type { SevenZipOptions, SevenZipResult, LogMessage } from '../types';
+import type { SevenZipOptions, SevenZipResult, LogMessage, LogLevel } from '../types';
 
 contextBridge.exposeInMainWorld('electronAPI', {
   // Settings
@@ -24,6 +24,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getDoc: (docName: string) => ipcRenderer.invoke('get-doc', docName),
 
   // Logging
+  log: (level: LogLevel, message: string) => ipcRenderer.send('log-from-renderer', { level, message }),
   toggleFileLogging: (enabled: boolean) => ipcRenderer.invoke('toggle-file-logging', enabled),
   onLogMessage: (callback: (log: LogMessage) => void) => {
     const listener = (_event: IpcRendererEvent, log: LogMessage) => callback(log);
