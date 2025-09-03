@@ -1,6 +1,6 @@
 import React, { useReducer, useCallback } from 'react';
 import type { FormEvent } from 'react';
-import { CommandKey, SevenZipResult } from '../types';
+import { CommandKey, SevenZipResult, IconSet } from '../types';
 import { COMMANDS, SWITCHES } from '../constants/schema';
 import SwitchControl from './SwitchControl';
 import CommandPreview from './CommandPreview';
@@ -13,9 +13,10 @@ interface CommandFormProps {
     onFinish: (result: SevenZipResult) => void;
     isRunning: boolean;
     executablePath: string;
+    iconSet: IconSet;
 }
 
-const CommandForm: React.FC<CommandFormProps> = ({ commandKey, onStart, onFinish, isRunning, executablePath }) => {
+const CommandForm: React.FC<CommandFormProps> = ({ commandKey, onStart, onFinish, isRunning, executablePath, iconSet }) => {
     const commandSchema = COMMANDS[commandKey];
     const [state, dispatch] = useReducer(commandStateReducer, commandKey, getInitialState);
 
@@ -66,7 +67,7 @@ const CommandForm: React.FC<CommandFormProps> = ({ commandKey, onStart, onFinish
                 )}
             </div>
 
-            <CommandPreview executablePath={executablePath} commandKey={commandKey} state={state} />
+            <CommandPreview executablePath={executablePath} commandKey={commandKey} state={state} iconSet={iconSet} />
 
             <button
                 type="submit"

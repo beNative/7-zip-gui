@@ -1,4 +1,6 @@
 import React from 'react';
+import { IconSet } from '../types';
+import Icon from './Icon';
 
 interface StatusBarProps {
     status: string;
@@ -6,6 +8,7 @@ interface StatusBarProps {
     executablePath: string;
     isLogPanelVisible: boolean;
     onToggleLogs: () => void;
+    iconSet: IconSet;
 }
 
 const getStatusColor = (exitCode: number | null, status: string): string => {
@@ -15,7 +18,7 @@ const getStatusColor = (exitCode: number | null, status: string): string => {
     return 'text-slate-500 dark:text-slate-400';
 }
 
-const StatusBar: React.FC<StatusBarProps> = ({ status, exitCode, executablePath, isLogPanelVisible, onToggleLogs }) => {
+const StatusBar: React.FC<StatusBarProps> = ({ status, exitCode, executablePath, isLogPanelVisible, onToggleLogs, iconSet }) => {
     
     const statusColor = getStatusColor(exitCode, status);
 
@@ -39,9 +42,7 @@ const StatusBar: React.FC<StatusBarProps> = ({ status, exitCode, executablePath,
                 title={isLogPanelVisible ? "Hide Logs" : "Show Logs"}
             >
                 <span>{isLogPanelVisible ? 'Hide Logs' : 'Show Logs'}</span>
-                <svg xmlns="http://www.w3.org/2000/svg" className={`h-3 w-3 transition-transform duration-200 ${isLogPanelVisible ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-                </svg>
+                <Icon name="chevron-up" iconSet={iconSet} className={`h-3 w-3 transition-transform duration-200 ${isLogPanelVisible ? 'rotate-180' : ''}`} />
             </button>
         </footer>
     );

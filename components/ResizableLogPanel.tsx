@@ -1,6 +1,8 @@
 import React, { useState, useCallback, useRef, MouseEvent } from 'react';
 import LogView from './LogView';
 import LoggingPanel from './LoggingPanel';
+import { IconSet } from '../types';
+import Icon from './Icon';
 
 interface ResizableLogPanelProps {
     isVisible: boolean;
@@ -9,6 +11,7 @@ interface ResizableLogPanelProps {
     isRunning: boolean;
     exitCode: number | null;
     isCommandView: boolean;
+    iconSet: IconSet;
 }
 
 type LogTab = 'operation' | 'application';
@@ -16,7 +19,7 @@ type LogTab = 'operation' | 'application';
 const MIN_HEIGHT = 100;
 const DEFAULT_HEIGHT = 250;
 
-const ResizableLogPanel: React.FC<ResizableLogPanelProps> = ({ isVisible, operationLogs, progress, isRunning, exitCode, isCommandView }) => {
+const ResizableLogPanel: React.FC<ResizableLogPanelProps> = ({ isVisible, operationLogs, progress, isRunning, exitCode, isCommandView, iconSet }) => {
     const [height, setHeight] = useState(DEFAULT_HEIGHT);
     const [activeTab, setActiveTab] = useState<LogTab>('operation');
     const isResizing = useRef(false);
@@ -56,10 +59,10 @@ const ResizableLogPanel: React.FC<ResizableLogPanelProps> = ({ isVisible, operat
             style={{ maxHeight: isVisible ? '80vh' : '0', height: isVisible ? `${height}px` : '0' }}
         >
             <div 
-                className="w-full h-2 cursor-row-resize flex items-center justify-center group"
+                className="w-full h-4 cursor-row-resize flex items-center justify-center group"
                 onMouseDown={handleMouseDown}
             >
-              <div className="w-10 h-1 bg-slate-300 dark:bg-slate-600 rounded-full group-hover:bg-blue-500 transition-colors"></div>
+              <Icon name="grip-horizontal" iconSet={iconSet} className="w-6 h-6 text-slate-300 dark:text-slate-600 group-hover:text-blue-500 transition-colors" />
             </div>
             <div className="px-4 pb-2 flex flex-col h-full">
                 <header className="flex items-center justify-between pb-2">

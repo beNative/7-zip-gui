@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppSettings, Theme } from '../types';
+import { AppSettings, Theme, IconSet } from '../types';
 
 interface SettingsViewProps {
     settings: AppSettings;
@@ -28,6 +28,21 @@ const SettingsView: React.FC<SettingsViewProps> = ({ settings, onSettingsChange 
             <button
                 type="button"
                 onClick={() => handleSettingChange('theme', theme)}
+                className={`px-4 py-1.5 text-sm rounded-md transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-700
+                    ${isActive ? 'bg-blue-500 text-white' : 'bg-transparent text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'}`
+                }
+            >
+                {label}
+            </button>
+        )
+    }
+
+    const IconSetButton: React.FC<{iconSet: IconSet, label: string}> = ({ iconSet, label }) => {
+        const isActive = settings.iconSet === iconSet;
+        return (
+            <button
+                type="button"
+                onClick={() => handleSettingChange('iconSet', iconSet)}
                 className={`px-4 py-1.5 text-sm rounded-md transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-700
                     ${isActive ? 'bg-blue-500 text-white' : 'bg-transparent text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'}`
                 }
@@ -69,6 +84,14 @@ const SettingsView: React.FC<SettingsViewProps> = ({ settings, onSettingsChange 
                     <div className="p-1 inline-flex items-center space-x-1 bg-slate-200 dark:bg-slate-700 rounded-lg">
                         <ThemeButton theme="light" label="Light" />
                         <ThemeButton theme="dark" label="Dark" />
+                    </div>
+                </div>
+
+                <div>
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Icon Set</label>
+                    <div className="p-1 inline-flex items-center space-x-1 bg-slate-200 dark:bg-slate-700 rounded-lg">
+                        <IconSetButton iconSet="heroicons" label="Heroicons" />
+                        <IconSetButton iconSet="lucide" label="Lucide" />
                     </div>
                 </div>
 

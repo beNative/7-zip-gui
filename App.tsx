@@ -27,7 +27,7 @@ const App: React.FC = () => {
     const [isRunning, setIsRunning] = useState(false);
     const [progress, setProgress] = useState(0);
     const [exitCode, setExitCode] = useState<number | null>(null);
-    const [settings, setSettings] = useState<AppSettings>({ executablePath: '7z', theme: 'dark' });
+    const [settings, setSettings] = useState<AppSettings>({ executablePath: '7z', theme: 'dark', iconSet: 'heroicons' });
     const [isLogPanelVisible, setIsLogPanelVisible] = useState(true);
     
     const handleViewChange = (newView: ViewMode) => {
@@ -118,6 +118,7 @@ const App: React.FC = () => {
                 onFinish={handleFinish}
                 isRunning={isRunning}
                 executablePath={settings.executablePath}
+                iconSet={settings.iconSet}
             />
         );
     };
@@ -144,6 +145,7 @@ const App: React.FC = () => {
                 isRunning={isRunning}
                 exitCode={exitCode}
                 isCommandView={view !== 'Help' && view !== 'Settings'}
+                iconSet={settings.iconSet}
             />
 
             <StatusBar 
@@ -152,6 +154,7 @@ const App: React.FC = () => {
                 executablePath={settings.executablePath}
                 isLogPanelVisible={isLogPanelVisible}
                 onToggleLogs={() => setIsLogPanelVisible(p => !p)}
+                iconSet={settings.iconSet}
             />
         </div>
     );

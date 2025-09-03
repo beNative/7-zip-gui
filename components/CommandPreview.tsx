@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import { CommandKey, CommandState } from '../types';
+import { CommandKey, CommandState, IconSet } from '../types';
 import { buildCommand } from '../utils/commandBuilder';
+import Icon from './Icon';
 
 interface CommandPreviewProps {
     executablePath: string;
     commandKey: CommandKey;
     state: CommandState;
+    iconSet: IconSet;
 }
 
-const CommandPreview: React.FC<CommandPreviewProps> = ({ executablePath, commandKey, state }) => {
+const CommandPreview: React.FC<CommandPreviewProps> = ({ executablePath, commandKey, state, iconSet }) => {
     const [copied, setCopied] = useState(false);
     const { preview } = buildCommand(executablePath, commandKey, state);
 
@@ -28,9 +30,10 @@ const CommandPreview: React.FC<CommandPreviewProps> = ({ executablePath, command
                 <button
                     type="button"
                     onClick={handleCopy}
-                    className="absolute top-2 right-2 px-2 py-1 text-xs font-semibold rounded-md bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-slate-900 focus:ring-blue-500"
+                    className="absolute top-2 right-2 px-2 py-1 text-xs font-semibold rounded-md bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-slate-900 focus:ring-blue-500 flex items-center space-x-1"
                 >
-                    {copied ? 'Copied!' : 'Copy'}
+                    <Icon name="copy" iconSet={iconSet} className="h-3 w-3" />
+                    <span>{copied ? 'Copied!' : 'Copy'}</span>
                 </button>
             </div>
         </div>

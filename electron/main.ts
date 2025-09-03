@@ -1,4 +1,5 @@
 
+
 import { app, BrowserWindow, ipcMain, dialog } from 'electron';
 import path from 'path';
 import fs from 'fs';
@@ -6,8 +7,8 @@ import fsp from 'fs/promises';
 import { spawn } from 'child_process';
 import { LogLevel, type LogMessage } from '../types';
 
-// FIX: The global `process` object was incorrectly typed, causing errors when accessing `process.cwd()` and `process.platform`. Importing `process` explicitly from the 'process' module provides the correct `NodeJS.Process` type.
-import process from 'process';
+// FIX: The 'process' object was incorrectly typed. Using a namespace import `import * as process from 'process'` to ensure the correct NodeJS.Process type is loaded, which resolves errors on `process.cwd()` and `process.platform`.
+import * as process from 'process';
 
 const isDev = !app.isPackaged;
 
@@ -62,12 +63,12 @@ async function readSettings() {
   try {
     const data = await fsp.readFile(SETTINGS_PATH, 'utf-8');
     const saved = JSON.parse(data);
-    const settings = { executablePath: '7z', theme: 'dark', ...saved };
+    const settings = { executablePath: '7z', theme: 'dark', iconSet: 'heroicons', ...saved };
     logger(LogLevel.INFO, `Settings loaded successfully.`);
     return settings;
   } catch (error) {
     logger(LogLevel.WARNING, `Failed to read settings file, returning defaults. Error: ${error}`);
-    return { executablePath: '7z', theme: 'dark' };
+    return { executablePath: '7z', theme: 'dark', iconSet: 'heroicons' };
   }
 }
 
