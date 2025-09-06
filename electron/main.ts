@@ -158,8 +158,7 @@ const createWindow = async () => {
             contextIsolation: true,
             nodeIntegration: false,
         },
-        frame: false,
-        titleBarStyle: 'hidden',
+        frame: true, // Show the native window frame and controls
     });
 
     // and load the index.html of the app.

@@ -127,9 +127,7 @@ const App: React.FC = () => {
 
     return (
         <div className="flex flex-col h-screen bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 transition-colors duration-300 overflow-hidden">
-            <div className="h-8 w-full flex-shrink-0" style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}></div>
-
-            <div className="flex-grow flex flex-col px-4 pb-0 overflow-hidden">
+            <div className="flex-grow flex flex-col px-4 pb-0 pt-2 overflow-hidden">
                 <main className="px-2 flex-grow flex flex-col overflow-hidden">
                     <CommandTabs currentView={view} onViewChange={handleViewChange} />
                     <div className="flex-grow overflow-y-auto pr-2 pb-4 bg-white dark:bg-slate-800 p-4 rounded-b-lg border-x border-b border-slate-200 dark:border-slate-700">
