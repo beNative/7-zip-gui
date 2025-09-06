@@ -39,6 +39,15 @@ export interface LogMessage {
     message: string;
 }
 
+// --- File Browser ---
+export interface FileEntry {
+    name: string;
+    path: string;
+    isDirectory: boolean;
+    size: number;
+    mtime: number; // Milliseconds since epoch
+}
+
 
 // --- Command & Switch Schema ---
 export enum SwitchControlType {

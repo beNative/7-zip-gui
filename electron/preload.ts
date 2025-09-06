@@ -1,6 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import type { IpcRendererEvent } from 'electron';
-import type { SevenZipOptions, SevenZipResult, LogMessage, LogLevel } from '../types';
+import type { SevenZipOptions, SevenZipResult, LogMessage, LogLevel, FileEntry } from '../types';
 
 contextBridge.exposeInMainWorld('electronAPI', {
   // Settings
@@ -11,6 +11,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   selectFile: () => ipcRenderer.invoke('select-file'),
   selectFiles: () => ipcRenderer.invoke('select-files'),
   selectDirectory: () => ipcRenderer.invoke('select-directory'),
+  listDirectory: (path: string): Promise<{ items?: FileEntry[]; error?: string; }> => ipcRenderer.invoke('list-directory', path),
   
   // 7zip operations
   run7zip: (options: SevenZipOptions) => ipcRenderer.invoke('run-7zip', options),

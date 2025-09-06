@@ -55,6 +55,7 @@ const CommandForm: React.FC<CommandFormProps> = ({ commandKey, onStart, onFinish
                             schema={switchSchema}
                             value={state[switchId]}
                             onChange={handleValueChange}
+                            iconSet={iconSet}
                         />
                     );
                 })}

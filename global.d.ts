@@ -1,4 +1,4 @@
-import type { SevenZipOptions, SevenZipResult, LogMessage, AppSettings, LogLevel } from './types';
+import type { SevenZipOptions, SevenZipResult, LogMessage, AppSettings, LogLevel, FileEntry } from './types';
 
 export {};
 
@@ -13,6 +13,7 @@ declare global {
       selectFile: () => Promise<string>;
       selectFiles: () => Promise<string[]>;
       selectDirectory: () => Promise<string>;
+      listDirectory: (path: string) => Promise<{ items?: FileEntry[]; error?: string }>;
 
       // 7zip
       run7zip: (options: SevenZipOptions) => Promise<SevenZipResult>;

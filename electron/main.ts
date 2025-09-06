@@ -3,7 +3,7 @@ import path from 'path';
 import fs from 'fs';
 import fsp from 'fs/promises';
 import { spawn } from 'child_process';
-import { LogLevel, type LogMessage, type SevenZipOptions, type SevenZipResult } from '../types';
+import { LogLevel, type LogMessage, type SevenZipOptions, type SevenZipResult, FileEntry } from '../types';
 
 // FIX: The 'process' object was incorrectly typed. Using a namespace import `import * as process from 'process'` to ensure the correct NodeJS.Process type is loaded, which resolves errors on `process.cwd()` and `process.platform`.
 import * as process from 'process';
@@ -138,6 +138,45 @@ function setupIpcHandlers() {
         if (!mainWindow) return;
         const result = await dialog.showOpenDialog(mainWindow, { properties: ['openDirectory'] });
         return result.filePaths[0];
+    });
+     ipcMain.handle('list-directory', async (_event, dirPath: string): Promise<{ items?: FileEntry[]; error?: string }> => {
+        try {
+            const targetPath = dirPath || app.getPath('home');
+            const names = await fsp.readdir(targetPath);
+            const files: (FileEntry | null)[] = await Promise.all(
+                names.map(async (name) => {
+                    const filePath = path.join(targetPath, name);
+                    try {
+                        const stats = await fsp.stat(filePath);
+                        return {
+                            name,
+                            path: filePath,
+                            isDirectory: stats.isDirectory(),
+                            size: stats.size,
+                            mtime: stats.mtime.getTime(),
+                        };
+                    } catch {
+                        // Permissions error or broken symlink
+                        return null;
+                    }
+                })
+            );
+
+            const validFiles = files.filter((file): file is FileEntry => file !== null);
+            
+            // Sort directories first, then files, both alphabetically
+            validFiles.sort((a, b) => {
+                if (a.isDirectory !== b.isDirectory) {
+                    return a.isDirectory ? -1 : 1;
+                }
+                return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' });
+            });
+            return { items: validFiles };
+        } catch (error: any) {
+            const errorMessage = `Failed to list directory '${dirPath}': ${error.message}`;
+            logger(LogLevel.ERROR, errorMessage);
+            return { error: errorMessage };
+        }
     });
 
     // 7-Zip
