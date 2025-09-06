@@ -44,6 +44,9 @@
   "build": {
     "appId": "com.example.7zipgui",
     "productName": "7-Zip GUI",
+    "directories": {
+      "output": "release"
+    },
     "publish": {
       "provider": "github"
     },
@@ -68,7 +71,8 @@
     },
     "nsis": {
       "oneClick": false,
-      "allowToChangeInstallationDirectory": true
+      "allowToChangeInstallationDirectory": true,
+      "artifactName": "${productName} Setup ${version}.${ext}"
     }
   }
 }
