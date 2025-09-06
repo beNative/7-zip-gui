@@ -73,7 +73,7 @@
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "artifactName": "${productName} Setup ${version}.${ext}",
-      "useSolidCompression": false
+      "useZip": true
     }
   }
 }
