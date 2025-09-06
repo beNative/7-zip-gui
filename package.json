@@ -1,3 +1,4 @@
+
 {
   "name": "7zip-gui",
   "version": "1.0.0",
@@ -44,6 +45,10 @@
   "build": {
     "appId": "com.example.7zipgui",
     "productName": "7-Zip GUI",
+    "arch": [
+      "x64",
+      "ia32"
+    ],
     "directories": {
       "output": "release"
     },
@@ -67,11 +72,7 @@
       }
     ],
     "win": {
-      "target": "nsis",
-      "arch": [
-        "x64",
-        "ia32"
-      ]
+      "target": "nsis"
     },
     "nsis": {
       "oneClick": false,
