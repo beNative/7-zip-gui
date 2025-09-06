@@ -3,6 +3,7 @@ import path from 'path';
 import fs from 'fs';
 import fsp from 'fs/promises';
 import { spawn } from 'child_process';
+import { autoUpdater } from 'electron-updater';
 import { LogLevel, type LogMessage, type SevenZipOptions, type SevenZipResult, FileEntry } from '../types';
 
 // FIX: The 'process' object was incorrectly typed. Using a namespace import `import * as process from 'process'` to ensure the correct NodeJS.Process type is loaded, which resolves errors on `process.cwd()` and `process.platform`.
@@ -53,6 +54,66 @@ const setFileLogging = (enabled: boolean) => {
   }
 };
 // --- End Logger ---
+
+// --- Auto Updater ---
+const formatBytes = (bytes: number, decimals = 2): string => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+};
+
+const setupAutoUpdater = () => {
+    logger(LogLevel.INFO, 'Setting up auto-updater.');
+
+    autoUpdater.logger = {
+        debug: (message) => logger(LogLevel.DEBUG, `[Updater] ${message}`),
+        info: (message) => logger(LogLevel.INFO, `[Updater] ${message}`),
+        warn: (message) => logger(LogLevel.WARNING, `[Updater] ${message}`),
+        error: (err) => logger(LogLevel.ERROR, `[Updater] ${typeof err === 'string' ? err : err.message}`),
+    };
+
+    autoUpdater.on('checking-for-update', () => {
+        logger(LogLevel.INFO, '[Updater] Checking for update...');
+    });
+
+    autoUpdater.on('update-available', (info) => {
+        logger(LogLevel.INFO, `[Updater] Update available: v${info.version}`);
+    });
+
+    autoUpdater.on('update-not-available', () => {
+        logger(LogLevel.INFO, '[Updater] Update not available.');
+    });
+
+    autoUpdater.on('error', (err) => {
+        logger(LogLevel.ERROR, `[Updater] Error in auto-updater: ${err.message}`);
+    });
+
+    autoUpdater.on('download-progress', (progressObj) => {
+        const logMessage = `[Updater] Downloaded ${progressObj.percent.toFixed(2)}% (${formatBytes(progressObj.transferred)}/${formatBytes(progressObj.total)}) at ${formatBytes(progressObj.bytesPerSecond)}/s`;
+        logger(LogLevel.INFO, logMessage);
+    });
+
+    autoUpdater.on('update-downloaded', (info) => {
+        logger(LogLevel.INFO, `[Updater] Update downloaded: v${info.version}. Prompting user to restart.`);
+        if (!mainWindow) return;
+        dialog.showMessageBox(mainWindow, {
+            type: 'info',
+            title: 'Update Ready to Install',
+            message: `A new version (${info.version}) has been downloaded. Restart the application to apply the updates?`,
+            buttons: ['Restart Now', 'Later'],
+            defaultId: 0,
+            cancelId: 1
+        }).then(({ response }) => {
+            if (response === 0) {
+                autoUpdater.quitAndInstall();
+            }
+        });
+    });
+};
+// --- End Auto Updater ---
 
 
 // --- Settings Management ---
@@ -252,6 +313,12 @@ app.whenReady().then(async () => {
     
     setupIpcHandlers();
     createWindow();
+
+    if (!isDev) {
+        setupAutoUpdater();
+        // Check for updates shortly after launch.
+        setTimeout(() => autoUpdater.checkForUpdates(), 5000);
+    }
 
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) {
