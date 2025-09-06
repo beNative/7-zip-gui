@@ -90,7 +90,8 @@ function createWindow() {
     minWidth: 700,
     minHeight: 600,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.cjs'),
+      // FIX: Replace untyped `__dirname` with a typed equivalent to resolve TS error. `process.mainModule.filename` gives the path to the main script, and `path.dirname` gets its directory.
+      preload: path.join(path.dirname(process.mainModule!.filename), 'preload.cjs'),
       contextIsolation: true,
       nodeIntegration: false,
     },
