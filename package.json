@@ -1,6 +1,6 @@
 {
   "name": "7zip-gui",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "A GUI for 7zip on Windows",
   "main": "dist/main.cjs",
   "type": "module",
@@ -10,8 +10,8 @@
     "build:renderer": "esbuild index.tsx --bundle --outfile=dist/renderer.js --platform=browser --format=esm --jsx=automatic --sourcemap",
     "build:main": "esbuild electron/main.ts --bundle --outfile=dist/main.cjs --platform=node --format=cjs --external:electron --sourcemap",
     "build:preload": "esbuild electron/preload.ts --bundle --outfile=dist/preload.cjs --platform=node --format=cjs --external:electron --sourcemap",
-    "package": "npm run build && electron-builder --x64 --ia32",
-    "publish": "npm run build && electron-builder --publish always --x64 --ia32"
+    "package": "electron-builder --x64 --ia32",
+    "publish": "electron-builder --publish always --x64 --ia32"
   },
   "repository": {
     "type": "git",
