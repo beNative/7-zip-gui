@@ -1,4 +1,3 @@
-
 {
   "name": "7zip-gui",
   "version": "1.0.0",
@@ -11,8 +10,8 @@
     "build:renderer": "esbuild index.tsx --bundle --outfile=dist/renderer.js --platform=browser --format=esm --jsx=automatic --sourcemap",
     "build:main": "esbuild electron/main.ts --bundle --outfile=dist/main.cjs --platform=node --format=cjs --external:electron --sourcemap",
     "build:preload": "esbuild electron/preload.ts --bundle --outfile=dist/preload.cjs --platform=node --format=cjs --external:electron --sourcemap",
-    "package": "npm run build && electron-builder",
-    "publish": "npm run build && electron-builder --publish always"
+    "package": "npm run build && electron-builder --x64 --ia32",
+    "publish": "npm run build && electron-builder --publish always --x64 --ia32"
   },
   "repository": {
     "type": "git",
@@ -45,10 +44,6 @@
   "build": {
     "appId": "com.example.7zipgui",
     "productName": "7-Zip GUI",
-    "arch": [
-      "x64",
-      "ia32"
-    ],
     "directories": {
       "output": "release"
     },
