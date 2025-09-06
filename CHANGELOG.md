@@ -7,7 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 - No changes yet.
 
-## [1.0.2] - 2024-05-26
+## [1.0.2] - 2025-09-06
 
 ### Added
 - Configured `electron-builder` for multi-platform builds, including Windows (32-bit & 64-bit), macOS, and Linux.
@@ -18,12 +18,12 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - Resolved a series of complex configuration and environmental errors that were preventing successful application publishing.
 
-## [1.0.1] - 2024-05-25
+## [1.0.1] - 2025-09-06
 
 ### Fixed
 - Restored the native window frame and controls, fixing an issue where the minimize, maximize, and close buttons were missing on Windows.
 
-## [1.0.0] - 2024-05-20
+## [1.0.0] - 2025-09-06
 
 ### Added
 - **Initial Release**: First public version of the 7-Zip GUI.

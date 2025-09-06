@@ -6,12 +6,13 @@
   "type": "module",
   "scripts": {
     "start": "npm run build && electron .",
-    "build": "npm run build:renderer && npm run build:main && npm run build:preload",
+    "build": "npm run build:css && npm run build:renderer && npm run build:main && npm run build:preload",
+    "build:css": "tailwindcss -i ./input.css -o ./dist/styles.css",
     "build:renderer": "esbuild index.tsx --bundle --outfile=dist/renderer.js --platform=browser --format=esm --jsx=automatic --sourcemap",
     "build:main": "esbuild electron/main.ts --bundle --outfile=dist/main.cjs --platform=node --format=cjs --external:electron --sourcemap",
     "build:preload": "esbuild electron/preload.ts --bundle --outfile=dist/preload.cjs --platform=node --format=cjs --external:electron --sourcemap",
-    "package": "electron-builder --x64 --ia32",
-    "publish": "electron-builder --publish always --x64 --ia32"
+    "package": "npm run build && electron-builder --x64 --ia32",
+    "publish": "npm run build && electron-builder --publish always --x64 --ia32"
   },
   "repository": {
     "type": "git",
@@ -33,6 +34,7 @@
     "remark-gfm": "^4.0.0"
   },
   "devDependencies": {
+    "@tailwindcss/typography": "^0.5.13",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "electron": "^30.0.1",
