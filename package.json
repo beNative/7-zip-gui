@@ -38,7 +38,6 @@
   "build": {
     "appId": "com.example.7zipgui",
     "productName": "7-Zip GUI",
-    "icon": "assets/icon.ico",
     "files": [
       "dist/**/*",
       "index.html"

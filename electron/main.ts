@@ -1,6 +1,7 @@
 
 
-import { app, BrowserWindow, ipcMain, dialog } from 'electron';
+
+import { app, BrowserWindow, ipcMain, dialog, nativeImage } from 'electron';
 import path from 'path';
 import fs from 'fs';
 import fsp from 'fs/promises';
@@ -82,16 +83,24 @@ async function writeSettings(settings: object) {
   }
 }
 
+// Embedded icon as a data URI to avoid needing a separate file.
+const ICON_DATA_URL = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJjdXJyZW50Q29sb3IiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cmVjdCB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHg9IjMiIHk9IjMiIHJ4PSIyIi8+PHBhdGggZD0iTTE1IDhoLTVsLTEgOGg3eiIvPjxwYXRoIGQ9Ik0xMiA4djgiLz48L3N2Zz4=';
+
 function createWindow() {
   logger(LogLevel.INFO, 'Creating application window...');
+  const appIcon = nativeImage.createFromDataURL(ICON_DATA_URL);
+  
   const win = new BrowserWindow({
     width: 900,
     height: 950,
     minWidth: 700,
     minHeight: 600,
+    icon: appIcon,
     webPreferences: {
-      // FIX: Replace untyped `__dirname` with a typed equivalent to resolve TS error. `process.mainModule.filename` gives the path to the main script, and `path.dirname` gets its directory.
-      preload: path.join(path.dirname(process.mainModule!.filename), 'preload.cjs'),
+      // Use app.getAppPath() for a robust path to the preload script. This works
+      // reliably in both development and packaged environments, unlike __dirname
+      // which can be affected by bundlers.
+      preload: path.join(app.getAppPath(), 'dist/preload.cjs'),
       contextIsolation: true,
       nodeIntegration: false,
     },
@@ -106,8 +115,9 @@ function createWindow() {
   });
 
   mainWindow = win;
-
-  win.loadFile('index.html');
+  
+  // Use app.getAppPath() to ensure the path to index.html is always correct.
+  win.loadFile(path.join(app.getAppPath(), 'index.html'));
   logger(LogLevel.INFO, 'Application window created.');
   // win.webContents.openDevTools();
 }
