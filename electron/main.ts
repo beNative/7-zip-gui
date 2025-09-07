@@ -1,3 +1,4 @@
+
 import { app, BrowserWindow, ipcMain, dialog } from 'electron';
 import path from 'path';
 import fs from 'fs';
@@ -154,7 +155,9 @@ const createWindow = async () => {
         title: '7-Zip GUI',
         backgroundColor: '#111827', // dark slate-900
         webPreferences: {
-            preload: path.join(__dirname, 'preload.cjs'),
+            // FIX: Cannot find name '__dirname'. This is replaced with a path constructed from `app.getAppPath()`.
+            // This assumes a standard build output structure where 'preload.cjs' is a sibling of the main script.
+            preload: path.join(isDev ? path.join(app.getAppPath(), 'dist-electron') : app.getAppPath(), 'preload.cjs'),
             contextIsolation: true,
             nodeIntegration: false,
         },
@@ -162,7 +165,10 @@ const createWindow = async () => {
     });
 
     // and load the index.html of the app.
-    mainWindow.loadFile(path.join(__dirname, '..', 'index.html'));
+    // FIX: Cannot find name '__dirname'. This is replaced with a path constructed from `app.getAppPath()`.
+    // This assumes a standard build output where the renderer's `index.html` is in a sibling directory (`dist`) during development,
+    // and at the root of the application package in production.
+    mainWindow.loadFile(path.join(isDev ? path.join(app.getAppPath(), 'dist') : app.getAppPath(), 'index.html'));
     
     // Open the DevTools if in dev mode
     if (isDev) {

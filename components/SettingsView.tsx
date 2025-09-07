@@ -4,9 +4,10 @@ import { AppSettings, Theme, IconSet } from '../types';
 interface SettingsViewProps {
     settings: AppSettings;
     onSettingsChange: (settings: AppSettings) => void;
+    onShowAbout: () => void;
 }
 
-const SettingsView: React.FC<SettingsViewProps> = ({ settings, onSettingsChange }) => {
+const SettingsView: React.FC<SettingsViewProps> = ({ settings, onSettingsChange, onShowAbout }) => {
     
     const handleSettingChange = (key: keyof AppSettings, value: any) => {
         const newSettings = { ...settings, [key]: value };
@@ -95,6 +96,16 @@ const SettingsView: React.FC<SettingsViewProps> = ({ settings, onSettingsChange 
                     </div>
                 </div>
 
+            </div>
+
+            <div className="pt-4 border-t border-slate-200 dark:border-slate-700">
+                <button
+                    type="button"
+                    onClick={onShowAbout}
+                    className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-slate-700 dark:text-slate-200 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-slate-800 transition-colors"
+                >
+                    About 7-Zip GUI...
+                </button>
             </div>
         </div>
     );

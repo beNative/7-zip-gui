@@ -6,6 +6,7 @@ import InfoView from './components/InfoView';
 import SettingsView from './components/SettingsView';
 import ResizableLogPanel from './components/ResizableLogPanel';
 import StatusBar from './components/StatusBar';
+import AboutDialog from './components/AboutDialog';
 
 // Helper to log from renderer process
 const log = (level: LogLevel, message: string) => {
@@ -29,6 +30,7 @@ const App: React.FC = () => {
     const [exitCode, setExitCode] = useState<number | null>(null);
     const [settings, setSettings] = useState<AppSettings>({ executablePath: '7z', theme: 'dark', iconSet: 'heroicons' });
     const [isLogPanelVisible, setIsLogPanelVisible] = useState(true);
+    const [isAboutDialogOpen, setIsAboutDialogOpen] = useState(false);
     
     const handleViewChange = (newView: ViewMode) => {
         log(LogLevel.INFO, `Navigating to view: ${newView}`);
@@ -106,7 +108,7 @@ const App: React.FC = () => {
 
     const renderView = () => {
         if (view === 'Settings') {
-            return <SettingsView settings={settings} onSettingsChange={handleSettingsChange} />;
+            return <SettingsView settings={settings} onSettingsChange={handleSettingsChange} onShowAbout={() => setIsAboutDialogOpen(true)} />;
         }
         if (view === 'Help') {
             return <InfoView />;
@@ -154,6 +156,7 @@ const App: React.FC = () => {
                 onToggleLogs={() => setIsLogPanelVisible(p => !p)}
                 iconSet={settings.iconSet}
             />
+            <AboutDialog isOpen={isAboutDialogOpen} onClose={() => setIsAboutDialogOpen(false)} />
         </div>
     );
 };

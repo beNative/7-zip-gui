@@ -1,4 +1,4 @@
-# Technical Manual: 7-Zip GUI v1.0.2
+# Technical Manual: 7-Zip GUI v1.0.4
 
 This document outlines the technical architecture of the 7-Zip GUI application, which is designed to be a flexible and extensible front-end for the 7-Zip CLI.
 

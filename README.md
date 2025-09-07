@@ -1,4 +1,4 @@
-# 7-Zip GUI - v1.0.2
+# 7-Zip GUI - v1.0.4
 
 A modern, powerful, and complete graphical user interface for the 7-Zip command-line tool. Built with Electron, React, and TypeScript, this application provides a comprehensive and intuitive way to handle all your file compression and archiving needs.
 

@@ -1,4 +1,4 @@
-# Functional Manual: 7-Zip GUI v1.0.2
+# Functional Manual: 7-Zip GUI v1.0.4
 
 This guide explains how to use the 7-Zip GUI application for a wide range of archiving tasks.
 

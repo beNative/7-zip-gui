@@ -7,6 +7,11 @@ All notable changes to this project will be documented in this file.
 ### Added
 - No changes yet.
 
+## [1.0.4] - 2025-09-07
+
+### Added
+- Added an "About" dialog accessible from the Settings page with application credits and copyright information.
+
 ## [1.0.2] - 2025-09-06
 
 ### Added
