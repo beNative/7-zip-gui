@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">7-Zip GUI Icon</title>
+  <desc id="desc">Minimal icon representing a secure archive with zipper motif</desc>
+  <defs>
+    <linearGradient id="bg-gradient" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#1d4ed8" />
+    </linearGradient>
+    <linearGradient id="zip-gradient" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#fde047" />
+      <stop offset="100%" stop-color="#f97316" />
+    </linearGradient>
+    <linearGradient id="panel-gradient" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#0ea5e9" stop-opacity="0.85" />
+      <stop offset="100%" stop-color="#1d4ed8" stop-opacity="0.9" />
+    </linearGradient>
+    <filter id="shadow" x="-15%" y="-15%" width="130%" height="130%" filterUnits="objectBoundingBox">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#0f172a" flood-opacity="0.35" />
+    </filter>
+  </defs>
+  <g filter="url(#shadow)">
+    <rect x="48" y="56" width="416" height="400" rx="80" fill="url(#bg-gradient)" />
+  </g>
+  <rect x="116" y="132" width="280" height="248" rx="36" fill="url(#panel-gradient)" />
+  <g stroke-linecap="round" stroke-width="20">
+    <line x1="256" y1="132" x2="256" y2="368" stroke="url(#zip-gradient)" />
+    <line x1="226" y1="180" x2="286" y2="180" stroke="#f8fafc" />
+    <line x1="226" y1="240" x2="286" y2="240" stroke="#f8fafc" />
+    <line x1="226" y1="300" x2="286" y2="300" stroke="#f8fafc" />
+  </g>
+  <circle cx="256" cy="368" r="38" fill="#fde047" />
+  <path d="M256 344c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16s16-7.2 16-16v-32c0-8.8-7.2-16-16-16z" fill="#0f172a" />
+  <path d="M196 112h120c8.8 0 16 7.2 16 16v8c0 8.8-7.2 16-16 16H196c-8.8 0-16-7.2-16-16v-8c0-8.8 7.2-16 16-16z" fill="#f8fafc" opacity="0.8" />
+</svg>
