@@ -7,6 +7,14 @@ All notable changes to this project will be documented in this file.
 ### Added
 - No changes yet.
 
+## [1.0.5] - 2025-09-08
+
+### Changed
+- Bumped application metadata and user-facing documentation to version 1.0.5 in preparation for release.
+
+### Fixed
+- Tidied release documentation to ensure the README and manuals reflect the current build details.
+
 ## [1.0.4] - 2025-09-07
 
 ### Added
