@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "npm run build && electron .",
-    "build": "npm run build:css && npm run build:renderer && npm run build:main && npm run build:preload",
+    "build": "npm run build:icons && npm run build:css && npm run build:renderer && npm run build:main && npm run build:preload",
+    "build:icons": "node ./scripts/build-icon.mjs",
     "build:css": "tailwindcss -i ./input.css -o ./dist/styles.css",
     "build:renderer": "esbuild index.tsx --bundle --outfile=dist/renderer.js --platform=browser --format=esm --jsx=automatic --sourcemap",
     "build:main": "esbuild electron/main.ts --bundle --outfile=dist/main.cjs --platform=node --format=cjs --external:electron --sourcemap",
@@ -40,6 +41,7 @@
     "electron": "^30.0.1",
     "electron-builder": "^24.13.3",
     "esbuild": "^0.21.3",
+    "@resvg/resvg-js": "^2.6.1",
     "typescript": "^5.4.5",
     "tailwindcss": "^3.4.3"
   },
@@ -47,7 +49,8 @@
     "appId": "com.example.7zipgui",
     "productName": "7-Zip GUI",
     "directories": {
-      "output": "release"
+      "output": "release",
+      "buildResources": "buildResources"
     },
     "publish": {
       "provider": "github"
@@ -69,7 +72,8 @@
       }
     ],
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "icon": "buildResources/icon.ico"
     },
     "nsis": {
       "oneClick": false,
@@ -84,7 +88,8 @@
         "dmg",
         "zip"
       ],
-      "artifactName": "${productName}-${version}-${arch}.${ext}"
+      "artifactName": "${productName}-${version}-${arch}.${ext}",
+      "icon": "buildResources/icon.icns"
     },
     "linux": {
       "category": "Utility",
@@ -92,7 +97,8 @@
         "AppImage",
         "deb"
       ],
-      "artifactName": "${productName}-${version}.${ext}"
+      "artifactName": "${productName}-${version}.${ext}",
+      "icon": "buildResources/icon.png"
     }
   }
 }

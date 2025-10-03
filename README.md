@@ -54,3 +54,12 @@ You can download 7-Zip from the official website: [www.7-zip.org](https://www.7-
     npm run package
     ```
     The packaged application will be located in the `dist` directory.
+
+### Application icon pipeline
+
+During every build the `build:icons` script searches the `assets` directory for an SVG icon (preferring `app-icon.svg`). The SVG
+is validated to ensure it has either a `viewBox` or explicit dimensions before it is rasterised. Valid SVGs are rendered into a
+set of PNGs, which are then bundled into platform-appropriate icon containers (`.ico` for Windows, `.icns` for macOS, and a
+512px PNG for Linux). If the SVG is missing or invalid, a bundled fallback artwork is used so packaging can still succeed.
+For SVG-to-raster conversion the script uses `@resvg/resvg-js`; when this dependency is not available a procedural fallback icon
+with similar styling is generated automatically.
