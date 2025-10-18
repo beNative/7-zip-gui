@@ -1,0 +1,186 @@
+name: Automated Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+
+jobs:
+  prepare:
+    name: Prepare release
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      tag: ${{ steps.meta.outputs.tag }}
+      release_id: ${{ steps.create_release.outputs.id }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate release version
+        run: node scripts/validate-version.mjs ${{ github.ref_name }}
+
+      - name: Extract changelog entry
+        run: node scripts/extract-changelog.mjs ${{ github.ref_name }} release-notes.md
+
+      - name: Read package version
+        id: version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Set tag output
+        id: meta
+        run: echo "tag=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: 7-Zip GUI ${{ steps.version.outputs.version }}
+          body_path: release-notes.md
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build:
+    name: Build and publish binaries
+    needs: prepare
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            platform: linux
+            build_cmd: npx electron-builder --linux AppImage deb
+          - os: macos-latest
+            platform: mac
+            build_cmd: npx electron-builder --mac dmg zip
+          - os: windows-latest
+            platform: windows
+            build_cmd: npx electron-builder --win nsis --x64 --ia32
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build renderer and main bundles
+        run: npm run build
+
+      - name: Package application for ${{ matrix.platform }}
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: ${{ matrix.build_cmd }}
+
+      - name: List generated artifacts
+        run: |
+          echo "Artifacts produced for ${{ matrix.platform }}:" && ls -R release
+
+      - name: Create asset manifest
+        run: |
+          node scripts/create-asset-manifest.mjs \
+            --platform ${{ matrix.platform }} \
+            --directory release \
+            --tag ${{ needs.prepare.outputs.tag }} \
+            --repository ${{ github.repository }} \
+            --output manifest-${{ matrix.platform }}.json
+
+      - name: Prepare asset upload list
+        id: assets
+        run: |
+          node -e "const fs=require('fs'); const data=JSON.parse(fs.readFileSync('manifest-${{ matrix.platform }}.json','utf8')); const files=data.files.map(f=>f.absolutePath.replace(/\\\\/g,'/')); fs.writeFileSync('asset-upload-list.txt', files.join('\n'));";
+          echo "Files to upload:" && cat asset-upload-list.txt
+          {
+            echo "files<<'EOF'";
+            cat asset-upload-list.txt;
+            echo 'EOF';
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Upload manifest artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: manifest-${{ matrix.platform }}
+          path: manifest-${{ matrix.platform }}.json
+          retention-days: 7
+
+      - name: Upload binaries to release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.prepare.outputs.tag }}
+          files: ${{ steps.assets.outputs.files }}
+          fail_on_unmatched_files: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Report build failure
+        if: failure()
+        run: echo "::error::Build for ${{ matrix.platform }} failed. Review the logs above for troubleshooting details."
+
+  finalize:
+    name: Finalize release
+    needs:
+      - prepare
+      - build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download manifests
+        uses: actions/download-artifact@v4
+        with:
+          pattern: manifest-*
+          path: manifests
+          merge-multiple: true
+
+      - name: Generate download page
+        run: |
+          node scripts/generate-download-page.mjs \
+            manifests \
+            ${{ needs.prepare.outputs.version }} \
+            ${{ needs.prepare.outputs.tag }} \
+            download.html
+
+      - name: Upload download page to release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.prepare.outputs.tag }}
+          files: download.html
+          fail_on_unmatched_files: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload download page artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-download-page
+          path: download.html
+          retention-days: 7
